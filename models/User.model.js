@@ -1,8 +1,12 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, default: mongoose } = require("mongoose");
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
+    name: {
+      type: String,
+      required: [true, "Name is required."],
+    },
     email: {
       type: String,
       required: [true, "Email is required."],
@@ -14,10 +18,29 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Password is required."],
     },
-    name: {
+    role: {
       type: String,
-      required: [true, "Name is required."],
+      enum: ["user", "admin"],
+      default: "user",
     },
+    wishList: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+    cart: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+      },
+    ],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

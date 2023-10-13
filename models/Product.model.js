@@ -40,6 +40,10 @@ const productSchema = new Schema(
       type: [String], 
       enum: validSizes, 
     },
+    stock: {
+      type: Number,
+      default: 1,
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
