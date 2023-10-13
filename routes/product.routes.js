@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product.model"); // Asegúrate de importar tu modelo de producto
+const { isAuthenticated } = require("../middleware/jwt.middleware");
+const {isAdmin} = require("../middleware/isAdmin.middleware");
 
 //* GET /products/all - Ruta para obtener todos los productos
 router.get("/all", async (req, res) => {
@@ -37,7 +39,7 @@ router.get("/:productId", async (req, res, next) => {
 });
 
 //* POST /products/add - Ruta para registrar un nuevo producto
-router.post("/add", async (req, res) => {
+router.post("/add",isAuthenticated,isAdmin, async (req, res) => {
   try {
     const newProduct = new Product(req.body);
     const savedProduct = await newProduct.save();
@@ -56,7 +58,7 @@ router.post("/add", async (req, res) => {
 });
 
 //* PUT /products/edit/:productId - Ruta para editar un producto existente por su ID
-router.put("/edit/:productId", async (req, res) => {
+router.put("/edit/:productId",isAuthenticated,isAdmin,  async (req, res) => {
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.productId,
@@ -82,7 +84,7 @@ router.put("/edit/:productId", async (req, res) => {
 });
 
 //* DELETE /products/delete/:productId - Ruta para borrar un producto por su ID
-router.delete("/delete/:productId", async (req, res) => {
+router.delete("/delete/:productId",isAuthenticated,isAdmin,  async (req, res) => {
   try {
     const deletedProduct = await Product.findByIdAndDelete(
       req.params.productId

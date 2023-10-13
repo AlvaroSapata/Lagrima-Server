@@ -4,7 +4,7 @@ const { expressjwt: jwt } = require("express-jwt");
 const isAuthenticated = jwt({
   secret: process.env.TOKEN_SECRET,
   algorithms: ["HS256"],
-  requestProperty: "payload", // get the payload after validation
+  requestProperty: "payload", // obtener el payload después de la validación
   getToken: getTokenFromHeaders,
 });
 
@@ -19,7 +19,6 @@ function getTokenFromHeaders(req) {
     const token = req.headers.authorization.split(" ")[1];
     return token;
   }
-
   return null;
 }
 
@@ -27,3 +26,4 @@ function getTokenFromHeaders(req) {
 module.exports = {
   isAuthenticated,
 };
+

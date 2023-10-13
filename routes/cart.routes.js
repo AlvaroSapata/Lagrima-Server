@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware  = require("../middleware/jwt.middleware")
+const {isAuthenticated}  = require("../middleware/jwt.middleware")
 const User = require("../models/User.model");
 
 router.get("/", (req, res, next) => {
@@ -9,7 +9,7 @@ router.get("/", (req, res, next) => {
 
 
 //* GET /cart/userCart - devuelve todos los productos del carrito
-router.get("/userCart", authMiddleware.isAuthenticated, async (req, res, next) => {
+router.get("/userCart", isAuthenticated, async (req, res, next) => {
   const userId = req.payload._id;
 
   try {
@@ -31,7 +31,7 @@ router.get("/userCart", authMiddleware.isAuthenticated, async (req, res, next) =
 });
 
 //* PATCH /cart/:productId/add - añade un producto a la compra en el array del carrito del usuario
-router.patch("/:productId/add", authMiddleware.isAuthenticated, async (req, res, next) => {
+router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
   const idUser = req.payload._id; // id del usuario cogido del token
   if (!idUser) {
     res.json(null);
@@ -75,7 +75,7 @@ router.patch("/:productId/add", authMiddleware.isAuthenticated, async (req, res,
 });
 
 //* PATCH /cart/:productId/pull - disminute cantidad del producto del array del carrito del usuario y si es 0 lo elimina
-router.patch("/:productId/pull", authMiddleware.isAuthenticated, async (req, res, next) => {
+router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
   const idUser = req.payload._id;
   const { productId } = req.params;
   let updatedUser = null;
@@ -132,7 +132,7 @@ router.patch("/:productId/pull", authMiddleware.isAuthenticated, async (req, res
 });
 
 //* PUT /cart/deleteall - vacía carrito
-router.put("/deleteall", authMiddleware.isAuthenticated, async (req, res, next) => {
+router.put("/deleteall", isAuthenticated, async (req, res, next) => {
   const idUser = req.payload._id;
 
   try {
@@ -153,8 +153,9 @@ router.put("/deleteall", authMiddleware.isAuthenticated, async (req, res, next) 
 
 
 //* GET  /cart/total - devuelve la cantidad total del carrito
-router.get("/total", authMiddleware.isAuthenticated, async (req, res, next) => {
+router.get("/total", isAuthenticated, async (req, res, next) => {
   const userId = req.payload._id;
+  console.log(req.payload);
 
   try {
     const response = await User.findById(userId).populate(
