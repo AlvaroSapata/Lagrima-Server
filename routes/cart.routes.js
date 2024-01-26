@@ -1,12 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const {isAuthenticated}  = require("../middleware/jwt.middleware")
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 const User = require("../models/User.model");
 
 router.get("/", (req, res, next) => {
   res.json("Checking Lagrima cart route");
 });
-
 
 //* GET /cart/userCart - devuelve todos los productos del carrito
 router.get("/userCart", isAuthenticated, async (req, res, next) => {
@@ -20,10 +19,21 @@ router.get("/userCart", isAuthenticated, async (req, res, next) => {
 
     if (response.cart.length === 0) {
       // El carrito está vacío, devuelve un mensaje
-      res.json({ message: 'Tu carrito está vacío' });
+      res.json({ message: "Tu carrito está vacío" });
     } else {
       // El carrito contiene productos, devuélvelos
-      res.json(response.cart);
+      let totalPrice = 0;
+      let quantity = 0;
+      response.cart.forEach((product) => {
+        console.log(product);
+        totalPrice += product.productId.price * product.quantity;
+        quantity += product.quantity
+      });
+      res.json({
+        cart: response.cart,
+        totalPrice: totalPrice,
+        quantity: quantity,
+      });
     }
   } catch (err) {
     next(err);
@@ -89,7 +99,9 @@ router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
     );
 
     if (!foundUser) {
-      return res.status(404).json({ error: "Usuario o producto no encontrado" });
+      return res
+        .status(404)
+        .json({ error: "Usuario o producto no encontrado" });
     }
 
     if (foundUser.cart[0].quantity > 1) {
@@ -121,7 +133,9 @@ router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
     });
 
     if (!productFound) {
-      return res.status(404).json({ error: "Producto no encontrado en el carrito del usuario" });
+      return res
+        .status(404)
+        .json({ error: "Producto no encontrado en el carrito del usuario" });
     }
 
     res.json(productFound);
@@ -151,9 +165,8 @@ router.put("/deleteall", isAuthenticated, async (req, res, next) => {
   }
 });
 
-
 //* GET  /cart/total - devuelve la cantidad total del carrito
-router.get("/total", isAuthenticated, async (req, res, next) => {
+/* router.get("/total", isAuthenticated, async (req, res, next) => {
   const userId = req.payload._id;
   console.log(req.payload);
 
@@ -176,8 +189,6 @@ router.get("/total", isAuthenticated, async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
-
-
+}); */
 
 module.exports = router;
