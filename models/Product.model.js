@@ -1,13 +1,13 @@
 const { Schema, model } = require("mongoose");
 
 // array with valid Types
-const validTypes = ["Camiseta","Riñonera","Sudadera"];
+const validTypes = ["Camiseta", "Riñonera", "Sudadera"];
 
 // array with valid sizes
-const validSizes = ["XS","S", "M", "L","XL","XXL"];
+const validSizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
 // array with valid colors
-const validColors = ["Negro","Rojo","Verdo","Amarillo","Blanco"];
+const validColors = ["Negro", "Rojo", "Verdo", "Amarillo", "Blanco"];
 
 const productSchema = new Schema(
   {
@@ -20,6 +20,10 @@ const productSchema = new Schema(
       type: String,
       required: [true, "Description is required."],
     },
+    image: {
+      type: String,
+      required: true,
+    },
     price: {
       type: Number,
       required: [true, "Price is required."],
@@ -30,15 +34,15 @@ const productSchema = new Schema(
     },
     type: {
       type: String,
-      enum: validTypes
+      enum: validTypes,
     },
     color: {
-      type: [String], 
-      enum: validColors
+      type: [String],
+      enum: validColors,
     },
     size: {
-      type: [String], 
-      enum: validSizes, 
+      type: [String],
+      enum: validSizes,
     },
     stock: {
       type: Number,
